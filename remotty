@@ -1,0 +1,27 @@
+#!/bin/bash
+
+pipe="${1:-/tmp/remotty}"
+
+if [ -e "$pipe" ]; then
+  echo "remotty: $pipe already exists -- aborting" >&2
+  exit 1
+fi
+
+mkfifo -m 660 "$pipe" || exit 2
+trap "rm -f $pipe" EXIT
+
+spin() {
+  while true; do
+    command="$(<"$pipe")"
+    printf '$ %s\n' "$command"
+    eval "$command"
+  done
+}
+
+# This extra loop guards against interpreter crashes
+while true; do
+  spin
+  echo "remotty: shell crashed -- restarted" >&2
+done
+
+exit 0
