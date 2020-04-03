@@ -9,6 +9,10 @@ if [ "x$XDANCEX" != "xsuccess" ]; then
   XDANCEX=success exec -a "$basename" bash <"$basename"
 fi
 
+if [ -e "$HOME/.remottyrc" ]; then
+  source "$HOME/.remottyrc"
+fi
+
 pipe="${1:-/tmp/remotty}"
 
 if [ -e "$pipe" ]; then
