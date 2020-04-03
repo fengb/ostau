@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ "x$XDANCEX" != "xsuccess" ]; then
+  # Rewrite the executable name to remove paths
+  basename="$(basename "$0")"
+  cd "$(dirname "$0")"
+
+  # Using a pipe hides the argument from ps
+  XDANCEX=success exec -a "$basename" bash <"$basename"
+fi
+
 pipe="${1:-/tmp/remotty}"
 
 if [ -e "$pipe" ]; then
